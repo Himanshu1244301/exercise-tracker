@@ -1,224 +1,399 @@
-// app.js - Complete application functionality
-function getThumbnail(url) {
-  const id = url.includes('youtu.be/') ? url.split('youtu.be/')[1] : url.split('v=')[1];
-  if (!id) return '';
-  return `https://img.youtube.com/vi/${id.split(/[&?]/)[0]}/default.jpg`;
-}
+// Premium FitTracker Pro Application
+class PremiumFitnessTracker {
+    constructor() {
+        this.currentDate = new Date();
+        this.currentMonth = this.currentDate.getMonth();
+        this.currentYear = this.currentDate.getFullYear();
+        this.isLoggedIn = sessionStorage.getItem('fitTracker_loggedIn') === 'true';
+        this.loginCredentials = { username: 'user', password: 'fitness123' };
 
-function renderSchedule() {
-  const schedule = document.getElementById('schedule');
-  if (!schedule) return;
-  
-  schedule.innerHTML = '';
-  
-  workoutDays.forEach((wd, dayIndex) => {
-    const dayDiv = document.createElement('div');
-    dayDiv.className = 'day';
-    dayDiv.id = `day-${dayIndex}`;
-    
-    const headerDiv = document.createElement('div');
-    headerDiv.className = 'day-header';
-    headerDiv.textContent = `${wd.day} – ${wd.name} (${wd.desc})`;
-    dayDiv.appendChild(headerDiv);
-    
-    const exercisesContainer = document.createElement('div');
-    exercisesContainer.className = 'exercises';
-    
-    wd.exercises.forEach((ex, exIndex) => {
-      const exDiv = document.createElement('div');
-      exDiv.className = 'exercise';
-      
-      const thumbnailBtn = document.createElement('button');
-      thumbnailBtn.className = 'thumbBtn';
-      thumbnailBtn.style.backgroundImage = `url('${getThumbnail(ex.video)}')`;
-      thumbnailBtn.onclick = () => window.open(ex.video, '_blank');
-      thumbnailBtn.setAttribute('aria-label', `Watch ${ex.name} video`);
-      
-      const contentDiv = document.createElement('div');
-      contentDiv.className = 'content';
-      
-      const nameH4 = document.createElement('h4');
-      nameH4.textContent = ex.name;
-      
-      const detailsP = document.createElement('p');
-      detailsP.className = 'details';
-      detailsP.textContent = `${ex.sets} | ${ex.rpe}${ex.weight ? ' | ' + ex.weight : ''}`;
-      
-      const cuesP = document.createElement('p');
-      cuesP.className = 'cues';
-      cuesP.textContent = ex.cues;
-      
-      contentDiv.appendChild(nameH4);
-      contentDiv.appendChild(detailsP);
-      contentDiv.appendChild(cuesP);
-      
-      exDiv.appendChild(thumbnailBtn);
-      exDiv.appendChild(contentDiv);
-      exercisesContainer.appendChild(exDiv);
-    });
-    
-    dayDiv.appendChild(exercisesContainer);
-    schedule.appendChild(dayDiv);
-  });
-}
+        // Convert workoutData to array format for easier processing
+        this.workoutDays = Object.keys(workoutData).map(day => ({
+            day: day,
+            name: workoutData[day].name,
+            desc: workoutData[day].desc,
+            duration: workoutData[day].duration,
+            exercises: workoutData[day].exercises
+        }));
 
-function renderCalendar() {
-  const calendarEl = document.getElementById('calendar');
-  if (!calendarEl) return;
-  
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  
-  calendarEl.innerHTML = '';
-  
-  // Add empty cells for days before the first day of the month
-  for (let i = 0; i < firstDay; i++) {
-    const emptyDiv = document.createElement('div');
-    emptyDiv.className = 'calendar-day empty';
-    calendarEl.appendChild(emptyDiv);
-  }
-  
-  // Add days of the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dayDiv = document.createElement('div');
-    dayDiv.className = 'calendar-day';
-    dayDiv.textContent = day;
-    dayDiv.dataset.day = day;
-    
-    const storageKey = `workout-${year}-${month}-${day}`;
-    if (localStorage.getItem(storageKey)) {
-      dayDiv.classList.add('done');
+        this.init();
     }
-    
-    dayDiv.onclick = () => {
-      const isDone = dayDiv.classList.toggle('done');
-      if (isDone) {
-        localStorage.setItem(storageKey, 'true');
-      } else {
-        localStorage.removeItem(storageKey);
-      }
-      updateCompletedCount();
-    };
-    
-    calendarEl.appendChild(dayDiv);
-  }
-  
-  updateCompletedCount();
-}
 
-function updateCompletedCount() {
-  const completedDays = document.querySelectorAll('.calendar-day.done').length;
-  const countEl = document.getElementById('completed-count');
-  if (countEl) {
-    countEl.textContent = `Workouts completed this month: ${completedDays}`;
-  }
-}
+    init() {
+        this.setupEventListeners();
+        this.displayTodaysWorkout();
+        this.renderWorkoutSchedule();
+        this.renderCalendar();
+        this.setupDarkMode();
+        this.checkLoginStatus();
+    }
 
-function displayTodaysWorkout() {
-  const todayIndex = (new Date().getDay() + 6) % 7; // Monday = 0
-  const todaysWorkout = workoutDays[todayIndex];
-  
-  const todayTextEl = document.getElementById('todayText');
-  if (todayTextEl) {
-    todayTextEl.textContent = `Today: ${todaysWorkout.day} – ${todaysWorkout.name}`;
-  }
-  
-  const startBtn = document.getElementById('startBtn');
-  if (startBtn) {
-    startBtn.onclick = () => {
-      const todaySection = document.getElementById(`day-${todayIndex}`);
-      if (todaySection) {
-        todaySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    };
-  }
-  
-  const copyLinkBtn = document.getElementById('copyLinkBtn');
-  if (copyLinkBtn) {
-    copyLinkBtn.onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        copyLinkBtn.textContent = '✓';
-        setTimeout(() => {
-          copyLinkBtn.textContent = '🔗';
-        }, 2000);
-      } catch (err) {
-        console.log('Copy failed:', err);
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = window.location.href;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        copyLinkBtn.textContent = '✓';
-        setTimeout(() => {
-          copyLinkBtn.textContent = '🔗';
-        }, 2000);
-      }
-    };
-  }
-}
+    setupEventListeners() {
+        // Dark mode toggle
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            this.toggleDarkMode();
+        });
 
-function setupDarkMode() {
-  const darkModeToggle = document.getElementById('darkModeToggle');
-  if (!darkModeToggle) return;
-  
-  // Check for saved theme preference or default to light mode
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark');
-    darkModeToggle.textContent = '☀️';
-  }
-  
-  darkModeToggle.onclick = () => {
-    const isDark = document.body.classList.toggle('dark');
-    darkModeToggle.textContent = isDark ? '☀️' : '🌙';
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  };
-}
+        // Copy link functionality
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            this.copyLink();
+        });
 
-function handleErrors() {
-  window.addEventListener('error', (event) => {
-    console.error('Script error:', event.error);
-  });
-  
-  window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
-  });
-}
+        // Start workout button
+        document.getElementById('startWorkoutBtn').addEventListener('click', () => {
+            this.scrollToTodaysWorkout();
+        });
 
-function initializeApp() {
-  try {
-    handleErrors();
-    displayTodaysWorkout();
-    renderSchedule();
-    renderCalendar();
-    setupDarkMode();
-    
-    // Add smooth scrolling for anchor links
-    document.addEventListener('click', (e) => {
-      if (e.target.matches('a[href^="#"]')) {
-        e.preventDefault();
-        const target = document.querySelector(e.target.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+        // Calendar navigation
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            this.navigateMonth(-1);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            this.navigateMonth(1);
+        });
+
+        document.getElementById('yearSelector').addEventListener('change', (e) => {
+            this.currentYear = parseInt(e.target.value);
+            this.renderCalendar();
+        });
+
+        // Calendar access button
+        document.getElementById('accessCalendar').addEventListener('click', () => {
+            if (this.isLoggedIn) {
+                this.showCalendarDetails();
+            } else {
+                this.showLoginModal();
+            }
+        });
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            this.handleLogin(e);
+        });
+
+        document.getElementById('cancelLogin').addEventListener('click', () => {
+            this.hideLoginModal();
+        });
+
+        // Close modal on overlay click
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target.id === 'loginModal') {
+                this.hideLoginModal();
+            }
+        });
+    }
+
+    displayTodaysWorkout() {
+        const todayIndex = (new Date().getDay() + 6) % 7; // Monday = 0
+        const todaysWorkout = this.workoutDays[todayIndex];
+
+        document.getElementById('todayTitle').textContent = `${todaysWorkout.day}: ${todaysWorkout.name}`;
+        document.getElementById('todayDescription').textContent = todaysWorkout.desc;
+        document.getElementById('todayExerciseCount').textContent = todaysWorkout.exercises.length;
+        document.getElementById('todayDuration').textContent = todaysWorkout.duration;
+    }
+
+    renderWorkoutSchedule() {
+        const scheduleContainer = document.getElementById('workoutSchedule');
+        scheduleContainer.innerHTML = '';
+
+        this.workoutDays.forEach((workout, index) => {
+            const dayCard = document.createElement('div');
+            dayCard.className = 'day-card';
+            dayCard.id = `workout-${index}`;
+
+            dayCard.innerHTML = `
+                <div class="day-header">
+                    <h3 class="day-title">${workout.day}: ${workout.name}</h3>
+                    <p class="day-description">${workout.desc} • ${workout.duration} mins</p>
+                </div>
+                <div class="exercises-grid">
+                    ${workout.exercises.map(exercise => `
+                        <div class="exercise-card">
+                            <div class="exercise-thumbnail" 
+                                 style="background-image: url('${this.getThumbnailUrl(exercise.video)}')"
+                                 onclick="window.open('${exercise.video}', '_blank')"
+                                 title="Watch ${exercise.name} video">
+                            </div>
+                            <div class="exercise-info">
+                                <h4>${exercise.name}</h4>
+                                <div class="exercise-details">${exercise.sets} | ${exercise.rpe}${exercise.weight ? ' | ' + exercise.weight : ''}</div>
+                                <div class="exercise-cues">${exercise.cues}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            scheduleContainer.appendChild(dayCard);
+        });
+    }
+
+    getThumbnailUrl(videoUrl) {
+        if (!videoUrl) return '';
+        const videoId = videoUrl.includes('youtu.be/') ? 
+            videoUrl.split('youtu.be/')[1] : 
+            videoUrl.split('v=')[1];
+        if (!videoId) return '';
+        return `https://img.youtube.com/vi/${videoId.split(/[&?]/)[0]}/default.jpg`;
+    }
+
+    scrollToTodaysWorkout() {
+        const todayIndex = (new Date().getDay() + 6) % 7;
+        const todayWorkout = document.getElementById(`workout-${todayIndex}`);
+        if (todayWorkout) {
+            todayWorkout.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }
-    });
-    
-    console.log('ExerciseTracker Web v1.3.0 initialized successfully');
-  } catch (error) {
-    console.error('Failed to initialize app:', error);
-  }
+    }
+
+    renderCalendar() {
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+
+        document.getElementById('monthYear').textContent = `${monthNames[this.currentMonth]} ${this.currentYear}`;
+
+        const calendarGrid = document.getElementById('calendarGrid');
+        calendarGrid.innerHTML = '';
+
+        const firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
+        const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+        const today = new Date();
+
+        // Add empty cells for days before the first day of month
+        for (let i = 0; i < firstDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            calendarGrid.appendChild(emptyDay);
+        }
+
+        // Add days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = day;
+
+            // Check if it's today
+            if (this.currentYear === today.getFullYear() && 
+                this.currentMonth === today.getMonth() && 
+                day === today.getDate()) {
+                dayElement.classList.add('today');
+            }
+
+            // Check if workout is completed
+            const workoutKey = `workout_${this.currentYear}_${this.currentMonth}_${day}`;
+            if (localStorage.getItem(workoutKey)) {
+                dayElement.classList.add('completed');
+            }
+
+            // Add click event
+            dayElement.addEventListener('click', () => {
+                if (this.isLoggedIn) {
+                    this.toggleWorkoutCompletion(day, dayElement);
+                } else {
+                    this.showLoginModal();
+                }
+            });
+
+            calendarGrid.appendChild(dayElement);
+        }
+
+        this.updateCalendarStats();
+    }
+
+    toggleWorkoutCompletion(day, dayElement) {
+        const workoutKey = `workout_${this.currentYear}_${this.currentMonth}_${day}`;
+
+        if (localStorage.getItem(workoutKey)) {
+            localStorage.removeItem(workoutKey);
+            dayElement.classList.remove('completed');
+        } else {
+            localStorage.setItem(workoutKey, 'true');
+            dayElement.classList.add('completed');
+        }
+
+        this.updateCalendarStats();
+    }
+
+    updateCalendarStats() {
+        const completedThisMonth = this.getCompletedWorkoutsForMonth(this.currentYear, this.currentMonth);
+        const totalCompleted = this.getTotalCompletedWorkouts();
+
+        document.getElementById('monthWorkouts').textContent = completedThisMonth;
+        document.getElementById('totalWorkouts').textContent = totalCompleted;
+    }
+
+    getCompletedWorkoutsForMonth(year, month) {
+        let count = 0;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const workoutKey = `workout_${year}_${month}_${day}`;
+            if (localStorage.getItem(workoutKey)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    getTotalCompletedWorkouts() {
+        let total = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('workout_')) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    navigateMonth(direction) {
+        this.currentMonth += direction;
+
+        if (this.currentMonth > 11) {
+            this.currentMonth = 0;
+            this.currentYear++;
+        } else if (this.currentMonth < 0) {
+            this.currentMonth = 11;
+            this.currentYear--;
+        }
+
+        document.getElementById('yearSelector').value = this.currentYear;
+        this.renderCalendar();
+    }
+
+    showLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.add('active');
+        const usernameField = document.getElementById('username');
+        if (usernameField) {
+            usernameField.focus();
+        }
+    }
+
+    hideLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.remove('active');
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.classList.remove('show');
+        }
+        const form = document.getElementById('loginForm');
+        if (form) {
+            form.reset();
+        }
+    }
+
+    handleLogin(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
+
+        if (username === this.loginCredentials.username && 
+            password === this.loginCredentials.password) {
+            this.isLoggedIn = true;
+            sessionStorage.setItem('fitTracker_loggedIn', 'true');
+            this.hideLoginModal();
+            this.showCalendarDetails();
+            this.updateCalendarUI();
+        } else {
+            if (errorMessage) {
+                errorMessage.textContent = 'Invalid username or password';
+                errorMessage.classList.add('show');
+            }
+        }
+    }
+
+    checkLoginStatus() {
+        if (this.isLoggedIn) {
+            this.updateCalendarUI();
+        }
+    }
+
+    updateCalendarUI() {
+        const accessButton = document.getElementById('accessCalendar');
+        if (accessButton && this.isLoggedIn) {
+            accessButton.innerHTML = '<span class="btn-icon">📊</span>View Progress';
+        }
+    }
+
+    showCalendarDetails() {
+        // Scroll to calendar and highlight it
+        const calendarSection = document.querySelector('.calendar-section');
+        if (calendarSection) {
+            calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    toggleDarkMode() {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+
+        const toggleButton = document.getElementById('darkModeToggle');
+        if (toggleButton) {
+            toggleButton.innerHTML = `<span class="icon">${isDark ? '☀️' : '🌙'}</span>`;
+        }
+
+        localStorage.setItem('fitTracker_darkMode', isDark.toString());
+    }
+
+    setupDarkMode() {
+        const isDarkMode = localStorage.getItem('fitTracker_darkMode') === 'true';
+        if (isDarkMode) {
+            document.body.classList.add('dark');
+            const toggleButton = document.getElementById('darkModeToggle');
+            if (toggleButton) {
+                toggleButton.innerHTML = '<span class="icon">☀️</span>';
+            }
+        }
+    }
+
+    async copyLink() {
+        const copyButton = document.getElementById('copyLinkBtn');
+        if (!copyButton) return;
+
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            copyButton.innerHTML = '<span class="icon">✅</span>';
+
+            setTimeout(() => {
+                copyButton.innerHTML = '<span class="icon">🔗</span>';
+            }, 2000);
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = window.location.href;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            copyButton.innerHTML = '<span class="icon">✅</span>';
+            setTimeout(() => {
+                copyButton.innerHTML = '<span class="icon">🔗</span>';
+            }, 2000);
+        }
+    }
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
-} else {
-  initializeApp();
-}
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        new PremiumFitnessTracker();
+        console.log('FitTracker Pro loaded successfully');
+    } catch (error) {
+        console.error('Failed to initialize FitTracker Pro:', error);
+    }
+});
+
+// Error handling
+window.addEventListener('error', (event) => {
+    console.error('Application error:', event.error);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+});
