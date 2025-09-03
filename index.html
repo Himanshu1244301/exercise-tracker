@@ -3,111 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExerciseTracker Web Files - Download</title>
+    <title>FitTracker Pro - Premium Exercise Tracking</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="download-header">
-            <h1>ExerciseTracker Web Files</h1>
-            <span class="version-badge">v1.3.0</span>
-        </header>
-
-        <main class="download-main">
-            <div class="description-section">
-                <h2>Complete Project Download</h2>
-                <p>This download contains all the files needed to run the ExerciseTracker Web application. Simply download, extract, and upload to your web hosting service or GitHub Pages.</p>
+    <!-- Header -->
+    <header class="premium-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="brand">
+                    <h1 class="brand-title">FitTracker <span class="brand-accent">Pro</span></h1>
+                    <span class="version-badge">Premium</span>
+                </div>
+                <div class="header-controls">
+                    <button id="darkModeToggle" class="icon-button" aria-label="Toggle dark mode">
+                        <span class="icon">🌙</span>
+                    </button>
+                    <button id="copyLinkBtn" class="icon-button" aria-label="Copy link">
+                        <span class="icon">🔗</span>
+                    </button>
+                </div>
             </div>
+        </div>
+    </header>
 
-            <div class="download-section">
-                <button id="downloadBtn" class="btn btn--download">
-                    <span class="download-icon">📦</span>
-                    Download All Files (ZIP)
-                </button>
-                <p class="download-note">All files will be packaged into a single ZIP file</p>
+    <!-- Today's Workout Section -->
+    <section class="today-section">
+        <div class="container">
+            <div class="today-card">
+                <div class="today-content">
+                    <h2 id="todayTitle" class="today-title">Loading today's workout...</h2>
+                    <p id="todayDescription" class="today-description">Preparing your premium workout experience</p>
+                    <button id="startWorkoutBtn" class="btn btn--primary btn--lg">
+                        <span class="btn-icon">💪</span>
+                        Start Today's Workout
+                    </button>
+                </div>
+                <div class="today-decoration"></div>
             </div>
+        </div>
+    </section>
 
-            <div class="files-list">
-                <h3>Included Files</h3>
-                <div class="file-grid">
-                    <div class="file-item">
-                        <div class="file-icon">📄</div>
-                        <div class="file-info">
-                            <h4>index.html</h4>
-                            <p>Main HTML structure with header, workout sections, and calendar</p>
-                        </div>
+    <!-- Exercise Schedule -->
+    <section class="schedule-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Weekly Training Program</h2>
+                <p class="section-subtitle">Your complete 7-day premium fitness schedule</p>
+            </div>
+            <div id="exerciseSchedule" class="exercise-schedule">
+                <!-- Exercises will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Calendar Section -->
+    <section class="calendar-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Workout Calendar</h2>
+                <p class="section-subtitle">Track your progress throughout the year</p>
+            </div>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prevMonth" class="calendar-nav">
+                        <span class="icon">←</span>
+                    </button>
+                    <div class="calendar-title">
+                        <h3 id="currentMonthYear" class="calendar-month">January 2025</h3>
+                        <select id="yearSelector" class="form-control year-selector">
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
                     </div>
-                    <div class="file-item">
-                        <div class="file-icon">🎨</div>
-                        <div class="file-info">
-                            <h4>style.css</h4>
-                            <p>Complete CSS styling with dark mode and responsive design</p>
-                        </div>
+                    <button id="nextMonth" class="calendar-nav">
+                        <span class="icon">→</span>
+                    </button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-weekdays">
+                        <span class="weekday">Sun</span>
+                        <span class="weekday">Mon</span>
+                        <span class="weekday">Tue</span>
+                        <span class="weekday">Wed</span>
+                        <span class="weekday">Thu</span>
+                        <span class="weekday">Fri</span>
+                        <span class="weekday">Sat</span>
                     </div>
-                    <div class="file-item">
-                        <div class="file-icon">💾</div>
-                        <div class="file-info">
-                            <h4>data.js</h4>
-                            <p>Workout data with verified ATHLEAN-X video links and exercise cues</p>
-                        </div>
+                    <div id="calendarGrid" class="calendar-days">
+                        <!-- Calendar days will be generated here -->
                     </div>
-                    <div class="file-item">
-                        <div class="file-icon">⚙️</div>
-                        <div class="file-info">
-                            <h4>app.js</h4>
-                            <p>Application functionality with calendar, dark mode, and interactivity</p>
-                        </div>
+                </div>
+                <div class="calendar-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="completedCount">0</span>
+                        <span class="stat-label">Workouts Completed</span>
                     </div>
-                    <div class="file-item">
-                        <div class="file-icon">📋</div>
-                        <div class="file-info">
-                            <h4>README.md</h4>
-                            <p>Project documentation with setup instructions and features</p>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="currentStreak">0</span>
+                        <span class="stat-label">Current Streak</span>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="features-section">
-                <h3>Application Features</h3>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <span class="feature-icon">💪</span>
-                        <span>7-Day Schedule</span>
+    <!-- Footer -->
+    <footer class="premium-footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© 2025 FitTracker Pro • Premium Exercise Tracking Experience</p>
+                <p class="footer-attribution">Video content courtesy of professional fitness instructors</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Access Premium Calendar</h3>
+                <button id="closeModal" class="modal-close" aria-label="Close modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">Please enter your credentials to access the premium calendar feature</p>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter username" required>
                     </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🎬</span>
-                        <span>Video Tutorials</span>
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter password" required>
                     </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">📅</span>
-                        <span>Calendar</span>
+                    <div id="loginError" class="error-message hidden">
+                        Invalid credentials. Please try again.
                     </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🌙</span>
-                        <span>Dark Mode</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">📱</span>
-                        <span>Mobile Responsive</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🔗</span>
-                        <span>Share & Link</span>
-                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">
+                        Access Calendar
+                    </button>
+                </form>
+                <div class="demo-credentials">
+                    <p class="demo-text">Demo credentials:</p>
+                    <p class="demo-info">Username: <code>user</code></p>
+                    <p class="demo-info">Password: <code>fitness123</code></p>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div id="successMessage" class="success-message hidden">
-                <span class="success-icon">✅</span>
-                <p>ZIP file download started successfully!</p>
-            </div>
-        </main>
-
-        <footer class="download-footer">
-            <p>© 2025 ExerciseTracker Web • Professional Fitness Tracking Application</p>
-        </footer>
+    <!-- Success Toast -->
+    <div id="successToast" class="toast toast--success hidden">
+        <div class="toast-content">
+            <span class="toast-icon">✓</span>
+            <span class="toast-message">Link copied to clipboard!</span>
+        </div>
     </div>
 
     <script src="app.js"></script>
