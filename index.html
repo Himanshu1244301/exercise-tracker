@@ -1,39 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ExerciseTracker</title>
-  <base href="/exercise-tracker/">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExerciseTracker Web Files - Download</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>ExerciseTracker Web</h1>
-    <div class="header-controls">
-      <span class="version">v1.2.0</span>
-      <button id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+    <div class="container">
+        <header class="download-header">
+            <h1>ExerciseTracker Web Files</h1>
+            <span class="version-badge">v1.3.0</span>
+        </header>
+
+        <main class="download-main">
+            <div class="description-section">
+                <h2>Complete Project Download</h2>
+                <p>This download contains all the files needed to run the ExerciseTracker Web application. Simply download, extract, and upload to your web hosting service or GitHub Pages.</p>
+            </div>
+
+            <div class="download-section">
+                <button id="downloadBtn" class="btn btn--download">
+                    <span class="download-icon">📦</span>
+                    Download All Files (ZIP)
+                </button>
+                <p class="download-note">All files will be packaged into a single ZIP file</p>
+            </div>
+
+            <div class="files-list">
+                <h3>Included Files</h3>
+                <div class="file-grid">
+                    <div class="file-item">
+                        <div class="file-icon">📄</div>
+                        <div class="file-info">
+                            <h4>index.html</h4>
+                            <p>Main HTML structure with header, workout sections, and calendar</p>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon">🎨</div>
+                        <div class="file-info">
+                            <h4>style.css</h4>
+                            <p>Complete CSS styling with dark mode and responsive design</p>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon">💾</div>
+                        <div class="file-info">
+                            <h4>data.js</h4>
+                            <p>Workout data with verified ATHLEAN-X video links and exercise cues</p>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon">⚙️</div>
+                        <div class="file-info">
+                            <h4>app.js</h4>
+                            <p>Application functionality with calendar, dark mode, and interactivity</p>
+                        </div>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon">📋</div>
+                        <div class="file-info">
+                            <h4>README.md</h4>
+                            <p>Project documentation with setup instructions and features</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features-section">
+                <h3>Application Features</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <span class="feature-icon">💪</span>
+                        <span>7-Day Schedule</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🎬</span>
+                        <span>Video Tutorials</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📅</span>
+                        <span>Calendar</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🌙</span>
+                        <span>Dark Mode</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📱</span>
+                        <span>Mobile Responsive</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔗</span>
+                        <span>Share & Link</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="successMessage" class="success-message hidden">
+                <span class="success-icon">✅</span>
+                <p>ZIP file download started successfully!</p>
+            </div>
+        </main>
+
+        <footer class="download-footer">
+            <p>© 2025 ExerciseTracker Web • Professional Fitness Tracking Application</p>
+        </footer>
     </div>
-  </header>
 
-  <section id="today">
-    <h2 id="todayText">Loading today's workout…</h2>
-    <div class="today-controls">
-      <button id="startBtn">Start Today's Workout</button>
-      <button id="copyLinkBtn" title="Copy workout link">🔗</button>
-    </div>
-  </section>
-
-  <section id="schedule"></section>
-
-  <section id="calendar-section">
-    <h2>Workout Calendar</h2>
-    <div id="calendar"></div>
-    <p id="completed-count"></p>
-  </section>
-
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
