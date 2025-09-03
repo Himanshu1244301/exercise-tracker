@@ -1,35 +1,75 @@
+:root {
+  --bg: #f2f2f2;
+  --fg: #333;
+  --card: #fff;
+  --header-bg: #1d4e89;
+  --header-fg: #fff;
+  --accent: #287bce;
+}
 body {
   font-family: 'Roboto', sans-serif;
-  background: #f2f2f2;
+  background: var(--bg);
   margin: 0;
-  color: #333;
+  color: var(--fg);
+  transition: background .3s, color .3s;
+}
+body.dark {
+  --bg: #222;
+  --fg: #eee;
+  --card: #333;
+  --header-bg: #111;
+  --accent: #4a90e2;
 }
 header {
-  background: #1d4e89;
-  color: #fff;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--header-bg);
+  color: var(--header-fg);
   padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.header-controls {
+  display: flex;
+  align-items: center;
+}
+.version {
+  opacity: .6;
+  margin-right: 12px;
+  font-size: 14px;
+}
+#darkModeToggle {
+  background: transparent;
+  border: none;
+  color: var(--header-fg);
+  font-size: 18px;
+  cursor: pointer;
 }
 h1 { margin: 0; font-weight: 500; }
 #today {
   text-align: center;
   margin: 20px auto;
 }
-#today h2 { font-weight: 400; margin-bottom: 8px; }
-#startBtn {
-  background: #287bce;
+.today-controls {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+#today button {
+  background: var(--accent);
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
 }
-#schedule {
+#schedule, #calendar-section {
   max-width: 800px;
   margin: 20px auto;
 }
-.day {
-  background: #fff;
+.day, #calendar-section {
+  background: var(--card);
   margin-bottom: 24px;
   border-radius: 6px;
   overflow: hidden;
@@ -43,15 +83,17 @@ h1 { margin: 0; font-weight: 500; }
 .exercises {
   display: flex;
   flex-wrap: wrap;
+  padding: 8px;
 }
 .exercise {
   width: calc(50% - 16px);
   margin: 8px;
-  background: #fafafa;
+  background: var(--card);
   border-radius: 4px;
   display: flex;
   padding: 8px;
   align-items: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 .thumbBtn {
   width: 40px;
@@ -63,9 +105,6 @@ h1 { margin: 0; font-weight: 500; }
   margin-right: 8px;
   cursor: pointer;
 }
-.content {
-  flex: 1;
-}
 .content h4 {
   margin: 0 0 4px;
   font-size: 15px;
@@ -75,36 +114,29 @@ h1 { margin: 0; font-weight: 500; }
   font-size: 13px;
   line-height: 1.3;
 }
-@media (max-width: 600px) {
-  .exercise { width: calc(100% - 16px); }
-}
-#calendar-section {
-  max-width: 800px;
-  margin: 20px auto;
-  background: #fff;
-  padding: 16px;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
 #calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
+  padding: 8px;
 }
 .calendar-day {
-  width: 100%;
   padding: 8px;
   text-align: center;
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
+  background: var(--card);
 }
 .calendar-day.done {
-  background: #287bce;
+  background: var(--accent);
   color: #fff;
 }
 #completed-count {
-  margin-top: 8px;
+  padding: 0 8px 8px;
   font-weight: 500;
+}
+@media (max-width: 600px) {
+  .exercise { width: calc(100% - 16px); }
 }

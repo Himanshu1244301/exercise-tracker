@@ -11,11 +11,18 @@
 <body>
   <header>
     <h1>ExerciseTracker Web</h1>
+    <div class="header-controls">
+      <span class="version">v1.2.0</span>
+      <button id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+    </div>
   </header>
 
   <section id="today">
     <h2 id="todayText">Loading today's workout…</h2>
-    <button id="startBtn">Start Today's Workout</button>
+    <div class="today-controls">
+      <button id="startBtn">Start Today's Workout</button>
+      <button id="copyLinkBtn" title="Copy workout link">🔗</button>
+    </div>
   </section>
 
   <section id="schedule"></section>
