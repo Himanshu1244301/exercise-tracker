@@ -1,172 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitTracker Pro - Premium Exercise Tracking</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ExerciseTracker</title>
+  <base href="/exercise-tracker/">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="premium-header">
-        <div class="container">
-            <div class="header-content">
-                <div class="brand">
-                    <h1 class="brand-title">FitTracker <span class="brand-accent">Pro</span></h1>
-                    <span class="version-badge">Premium</span>
-                </div>
-                <div class="header-controls">
-                    <button id="darkModeToggle" class="icon-button" aria-label="Toggle dark mode">
-                        <span class="icon">🌙</span>
-                    </button>
-                    <button id="copyLinkBtn" class="icon-button" aria-label="Copy link">
-                        <span class="icon">🔗</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Today's Workout Section -->
-    <section class="today-section">
-        <div class="container">
-            <div class="today-card">
-                <div class="today-content">
-                    <h2 id="todayTitle" class="today-title">Loading today's workout...</h2>
-                    <p id="todayDescription" class="today-description">Preparing your premium workout experience</p>
-                    <button id="startWorkoutBtn" class="btn btn--primary btn--lg">
-                        <span class="btn-icon">💪</span>
-                        Start Today's Workout
-                    </button>
-                </div>
-                <div class="today-decoration"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Exercise Schedule -->
-    <section class="schedule-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Weekly Training Program</h2>
-                <p class="section-subtitle">Your complete 7-day premium fitness schedule</p>
-            </div>
-            <div id="exerciseSchedule" class="exercise-schedule">
-                <!-- Exercises will be loaded here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Calendar Section -->
-    <section class="calendar-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Workout Calendar</h2>
-                <p class="section-subtitle">Track your progress throughout the year</p>
-            </div>
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <button id="prevMonth" class="calendar-nav">
-                        <span class="icon">←</span>
-                    </button>
-                    <div class="calendar-title">
-                        <h3 id="currentMonthYear" class="calendar-month">January 2025</h3>
-                        <select id="yearSelector" class="form-control year-selector">
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025" selected>2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                        </select>
-                    </div>
-                    <button id="nextMonth" class="calendar-nav">
-                        <span class="icon">→</span>
-                    </button>
-                </div>
-                <div class="calendar-grid">
-                    <div class="calendar-weekdays">
-                        <span class="weekday">Sun</span>
-                        <span class="weekday">Mon</span>
-                        <span class="weekday">Tue</span>
-                        <span class="weekday">Wed</span>
-                        <span class="weekday">Thu</span>
-                        <span class="weekday">Fri</span>
-                        <span class="weekday">Sat</span>
-                    </div>
-                    <div id="calendarGrid" class="calendar-days">
-                        <!-- Calendar days will be generated here -->
-                    </div>
-                </div>
-                <div class="calendar-stats">
-                    <div class="stat-item">
-                        <span class="stat-value" id="completedCount">0</span>
-                        <span class="stat-label">Workouts Completed</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="currentStreak">0</span>
-                        <span class="stat-label">Current Streak</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="premium-footer">
-        <div class="container">
-            <div class="footer-content">
-                <p class="footer-text">© 2025 FitTracker Pro • Premium Exercise Tracking Experience</p>
-                <p class="footer-attribution">Video content courtesy of professional fitness instructors</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal hidden">
-        <div class="modal-overlay" id="modalOverlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Access Premium Calendar</h3>
-                <button id="closeModal" class="modal-close" aria-label="Close modal">✕</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-description">Please enter your credentials to access the premium calendar feature</p>
-                <form id="loginForm" class="login-form">
-                    <div class="form-group">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" id="username" class="form-control" placeholder="Enter username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" class="form-control" placeholder="Enter password" required>
-                    </div>
-                    <div id="loginError" class="error-message hidden">
-                        Invalid credentials. Please try again.
-                    </div>
-                    <button type="submit" class="btn btn--primary btn--full-width">
-                        Access Calendar
-                    </button>
-                </form>
-                <div class="demo-credentials">
-                    <p class="demo-text">Demo credentials:</p>
-                    <p class="demo-info">Username: <code>user</code></p>
-                    <p class="demo-info">Password: <code>fitness123</code></p>
-                </div>
-            </div>
-        </div>
+  <header>
+    <h1>ExerciseTracker Web</h1>
+    <div class="header-controls">
+      <span class="version">v1.3.0</span>
+      <button id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
     </div>
+  </header>
 
-    <!-- Success Toast -->
-    <div id="successToast" class="toast toast--success hidden">
-        <div class="toast-content">
-            <span class="toast-icon">✓</span>
-            <span class="toast-message">Link copied to clipboard!</span>
-        </div>
+  <section id="today">
+    <h2 id="todayText">Loading today's workout…</h2>
+    <div class="today-controls">
+      <button id="startBtn">Start Today's Workout</button>
+      <button id="copyLinkBtn" title="Copy workout link">🔗</button>
     </div>
+  </section>
 
-    <script src="app.js"></script>
+  <section id="schedule"></section>
+
+  <section id="calendar-section">
+    <h2>Workout Calendar</h2>
+    <div class="calendar-header">
+      <span class="day-label">Sun</span>
+      <span class="day-label">Mon</span>
+      <span class="day-label">Tue</span>
+      <span class="day-label">Wed</span>
+      <span class="day-label">Thu</span>
+      <span class="day-label">Fri</span>
+      <span class="day-label">Sat</span>
+    </div>
+    <div id="calendar"></div>
+    <p id="completed-count"></p>
+  </section>
+
+  <footer>
+    <p>© 2025 ExerciseTracker Web • All videos courtesy of ATHLEAN-X</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
