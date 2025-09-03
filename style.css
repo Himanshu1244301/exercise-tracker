@@ -62,7 +62,6 @@ h1 { margin: 0; font-weight: 500; }
   border-radius: 4px;
   margin-right: 8px;
   cursor: pointer;
-  flex-shrink: 0;
 }
 .content {
   flex: 1;
@@ -78,4 +77,34 @@ h1 { margin: 0; font-weight: 500; }
 }
 @media (max-width: 600px) {
   .exercise { width: calc(100% - 16px); }
+}
+#calendar-section {
+  max-width: 800px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 16px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+#calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.calendar-day {
+  width: 100%;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+.calendar-day.done {
+  background: #287bce;
+  color: #fff;
+}
+#completed-count {
+  margin-top: 8px;
+  font-weight: 500;
 }
